@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>google-youtube Demo</title>
+    <script src="../platform/platform.js"></script>
+    <link rel="import" href="google-youtube.html">
+
+    <style>
+      body {
+        font-family: sans-serif;
+        background: rgba(204, 204, 204, 0.31);
+      }
+    </style>
+  </head>
+
+  <body unresolved>
+    <p>A <code>google-youtube</code> looks like this:</p>
+    <google-youtube videoid="mN7IAaRdi_k"></google-youtube>
+
+    <div>
+      <input id="play-video" type="button" value="Play">
+      <input id="pause-video" type="button" value="Pause">
+    </div>
+
+    <div>
+      <label for="video-id">Video ID:</label>
+      <input id="video-id" type="text" value="M7lc1UVf-VE">
+      <input id="cue-video" type="button" value="Cue">
+    </div>
+
+    <div>
+      <p>Player Events:</p>
+      <ul id="event-list"></ul>
+    </div>
+
+    <script>
+      var googleYouTubeElement = document.querySelector('google-youtube');
+      var eventListElement = document.getElementById('event-list');
+
+      document.getElementById('play-video').addEventListener('click', function() {
+        googleYouTubeElement.play();
+      });
+
+      document.getElementById('pause-video').addEventListener('click', function() {
+        googleYouTubeElement.pause();
+      });
+
+      document.getElementById('cue-video').addEventListener('click', function() {
+        googleYouTubeElement.videoid = document.getElementById('video-id').value;
+      });
+
+      googleYouTubeElement.addEventListener('onStateChange', function(e) {
+        var liElement = document.createElement('li');
+        liElement.textContent = 'New State: ' + e.detail.data;
+        eventListElement.appendChild(liElement);
+      });
+    </script>
+  </body>
+</html>
