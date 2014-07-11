@@ -1,0 +1,70 @@
+:host {
+  display: block;
+  font-family: RobotoDraft, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+}
+
+core-header-panel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+}
+
+core-toolbar {
+  color: rgb(255, 255, 255);
+  background-color: rgb(79, 125, 201);
+}
+
+core-list {
+  height: 100%;
+  background: linear-gradient(rgb(214, 227, 231), rgb(173, 216, 230));
+}
+
+paper-ripple {
+  color: rgb(79, 125, 201);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+paper-dialog {
+  width: 530px;
+}
+
+paper-dialog /deep/ h1 {
+  margin-bottom: 20px;
+}
+
+.video-container {
+  cursor: pointer;
+  display: inline-block;
+  width: 340px;
+  height: 340px;
+  background-color: #fff;
+  vertical-align: top;
+  margin-left: 25px;
+  margin-top: 25px;
+}
+
+.video-container > img {
+  display: block;
+  margin: 10px auto 10px auto;
+}
+
+.video-container > h1 {
+  font-weight: bold;
+  font-size: 120%;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.video-container > p {
+  text-align: justify;
+  margin-left: 10px;
+  margin-right: 10px;
+}

@@ -1,0 +1,164 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../bower_components/core-list/core-list.html">
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/google-youtube/google-youtube.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../bower_components/font-roboto/roboto.html">
+
+<!--
+A video wall with material design styling.
+It uses [YouTube Data API v3](https://developers.google.com/youtube/v3/)
+searches to populate the list of videos.
+
+##### Example
+
+    <google-youtube-video-wall></google-youtube-video-wall>
+
+@element google-youtube-video-wall
+@blurb An element for displaying collections of YouTube videos.
+@status alpha
+@homepage https://github.com/googlewebcomponents/google-youtube-video-wall
+-->
+
+<polymer-element name="google-youtube-video-wall"
+                 attributes="maxVideos keySearchParam channelIdSearchParam locationSearchParam locationRadiusSearchParam maxResultsSearchParam orderSearchParam publishedAfterSearchParam publishedBeforeSearchParam qSearchParam safeSearchSearchParam topicIdSearchParam videoCategoryIdSearchParam">
+  <template>
+    <link rel="stylesheet" href="google-youtube-video-wall.css" />
+
+    <core-header-panel>
+      <!-- TODO: Instead of dumping {{searchParams}} as JSON, display a human-readable description of the search. -->
+      <core-toolbar>Params: {{searchParams}}</core-toolbar>
+
+      <core-list data="{{data}}" height="340" on-core-activate="{{handleItemSelected}}">
+        <template>
+          <section class="video-container" data-video-id="{{id.videoId}}" data-video-title="{{snippet.title}}">
+            <paper-shadow z="1"></paper-shadow>
+            <paper-ripple fit></paper-ripple>
+
+            <img src="{{snippet.thumbnails.medium.url}}">
+            <h1>{{snippet.title}}</h1>
+            <p>{{snippet.description}}</p>
+          </section>
+        </template>
+      </core-list>
+
+      <paper-dialog id="playerdialog"
+                    heading="{{selectedVideoTitle}}"
+                    transition="paper-dialog-transition-center"
+                    on-core-overlay-open="{{handleDialogOpenOrClose}}">
+        <template if="{{selectedVideoId}}">
+          <google-youtube id="youtubeplayer" videoid="{{selectedVideoId}}"></google-youtube>
+        </template>
+      </paper-dialog>
+    </core-header-panel>
+
+    <template if="{{searchParams}}">
+      <core-ajax auto
+                 url="https://www.googleapis.com/youtube/v3/search"
+                 params="{{searchParams}}"
+                 handleAs="json"
+                 on-core-response="{{handleSearchResponse}}">
+      </core-ajax>
+    </template>
+  </template>
+
+  <script>
+    (function() {
+      var SEARCH_PARAM_REGEX = /searchparam/i;
+
+      Polymer('google-youtube-video-wall', {
+        // TODO: Add JSDoc for the published attributes.
+        maxItems: 500,
+        keySearchParam: 'AIzaSyAcB7qNYPC6bI7e3PHscV8w5-acmocWhmE',
+        channelIdSearchParam: '',
+        locationSearchParam: '',
+        locationRadiusSearchParam: '',
+        maxResultsSearchParam: 50,
+        orderSearchParam: 'relevance',
+        publishedAfterSearchParam: '',
+        publishedBeforeSearchParam: '',
+        qSearchParam: '',
+        safeSearchSearchParam: 'moderate',
+        topicIdSearchParam: '',
+        videoCategoryIdSearchParam: '',
+
+        selectedVideoId: '',
+        selectedVideoTitle: '',
+        nextPageToken: '',
+        youtubeApiSearchParams: '',
+
+        updateYouTubeApiSearchParams: function() {
+          var params = {
+            part: 'snippet',
+            pageToken: this.nextPageToken,
+            type: 'video',
+            videoEmbeddable: 'true',
+            key: this.keySearchParam,
+            maxResults: this.maxResultsSearchParam,
+            channelId: this.channelIdSearchParam,
+            location: this.locationSearchParam,
+            locationRadius: this.locationRadiusSearchParam,
+            order: this.orderSearchParam,
+            q: this.qSearchParam,
+            safeSearch: this.safeSearchSearchParam,
+            topicId: this.topicIdSearchParam,
+            videoCategoryId: this.videoCategoryIdSearchParam
+          };
+
+          Object.keys(params).forEach(function(key) {
+            if (params[key] === '') {
+              delete(params[key]);
+            }
+          });
+
+          this.searchParams = JSON.stringify(params);
+        },
+
+        handleSearchResponse: function(e) {
+          var response = e.detail.response;
+
+          if (this.data) {
+            this.data = this.data.concat(response.items);
+          } else {
+            this.data = response.items;
+          }
+
+          if (response.nextPageToken && this.data.length < this.maxItems) {
+            this.nextPageToken = response.nextPageToken;
+            this.updateYouTubeApiSearchParams();
+          }
+        },
+
+        handleItemSelected: function(e) {
+          this.selectedVideoId = e.detail.item.dataset.videoId;
+          this.selectedVideoTitle = e.detail.item.dataset.videoTitle;
+          this.$.playerdialog.toggle();
+        },
+
+        handleDialogOpenOrClose: function(e) {
+          // e.detail will be set to true if the dialog opened,
+          // and set to a truthy Object otherwise, so we need to explicitly
+          // check !== true to see if this is a close event.
+          // TODO: See if this is a bug in the paper-dialog library.
+          if (e.detail !== true) {
+            this.shadowRoot.querySelector('google-youtube').pause();
+          }
+        },
+
+        attributeChanged: function(attrName, oldVal, newVal) {
+          if (SEARCH_PARAM_REGEX.test(attrName)) {
+            this.updateYouTubeApiSearchParams();
+          }
+        },
+
+        ready: function() {
+          this.updateYouTubeApiSearchParams();
+        }
+      });
+    })();
+  </script>
+</polymer-element>
