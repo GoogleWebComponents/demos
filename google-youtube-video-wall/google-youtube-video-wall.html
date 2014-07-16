@@ -1,13 +1,19 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
-<link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
-<link rel="import" href="../bower_components/core-list/core-list.html">
-<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
-<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../bower_components/core-animated-pages/core-animated-pages.html">
+<link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="../bower_components/core-icon/core-icon.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/core-icons/iconsets/av-icons.html">
+<link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../bower_components/font-roboto/roboto.html">
+<link rel="import" href="../bower_components/google-youtube/google-youtube.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
 
 <!--
 A video wall with material design styling.
@@ -25,36 +31,78 @@ searches to populate the list of videos.
 -->
 
 <polymer-element name="google-youtube-video-wall"
-                 attributes="maxVideos keySearchParam channelIdSearchParam locationSearchParam locationRadiusSearchParam maxResultsSearchParam orderSearchParam publishedAfterSearchParam publishedBeforeSearchParam qSearchParam safeSearchSearchParam topicIdSearchParam videoCategoryIdSearchParam">
+                 attributes="headerTitle maxVideos keySearchParam channelIdSearchParam locationSearchParam locationRadiusSearchParam maxResultsSearchParam orderSearchParam publishedAfterSearchParam publishedBeforeSearchParam qSearchParam safeSearchSearchParam topicIdSearchParam videoCategoryIdSearchParam">
   <template>
     <link rel="stylesheet" href="google-youtube-video-wall.css" />
 
-    <core-header-panel>
-      <!-- TODO: Instead of dumping {{searchParams}} as JSON, display a human-readable description of the search. -->
-      <core-toolbar>Params: {{searchParams}}</core-toolbar>
+    <core-animated-pages id="corepage"
+                         transitions="hero-transition cross-fade"
+                         selected="0"
+                         on-core-animated-pages-transition-end="{{handleTransitionEnd}}">
+      <section>
+        <core-header-panel cross-fade>
+          <core-toolbar>
+            <header>{{headerTitle}}</header>
+          </core-toolbar>
 
-      <core-list data="{{data}}" height="340" on-core-activate="{{handleItemSelected}}">
-        <template>
-          <section class="video-container" data-video-id="{{id.videoId}}" data-video-title="{{snippet.title}}">
-            <paper-shadow z="1"></paper-shadow>
-            <paper-ripple fit></paper-ripple>
+          <div id="searchresults">
+            <template repeat="{{video in videos}}">
+              <div class="video-container"
+                       data-video-id="{{video.id.videoId}}"
+                       data-video-title="{{video.snippet.title}}"
+                       data-video-background-url="{{video.snippet.thumbnails.high.url}}"
+                       on-tap="{{handleItemSelected}}">
+                <paper-shadow z="1"></paper-shadow>
+                <paper-ripple fit></paper-ripple>
 
-            <img src="{{snippet.thumbnails.medium.url}}">
-            <h1>{{snippet.title}}</h1>
-            <p>{{snippet.description}}</p>
-          </section>
-        </template>
-      </core-list>
+                <img src="{{video.snippet.thumbnails.medium.url}}" hero-id="{{video.id.videoId}}" hero>
+                <h1>{{video.snippet.title}}</h1>
+                <p>{{video.snippet.description}}</p>
+              </div>
+            </template>
+          </div>
+        </core-header-panel>
+      </section>
 
-      <paper-dialog id="playerdialog"
-                    heading="{{selectedVideoTitle}}"
-                    transition="paper-dialog-transition-center"
-                    on-core-overlay-open="{{handleDialogOpenOrClose}}">
-        <template if="{{selectedVideoId}}">
-          <google-youtube id="youtubeplayer" videoid="{{selectedVideoId}}"></google-youtube>
-        </template>
-      </paper-dialog>
-    </core-header-panel>
+      <section>
+        <div cross-fade>
+          <template if="{{selectedVideoId}}">
+            <google-youtube videoid="{{selectedVideoId}}"
+                            chromeless
+                            width="{{playerWidth}}"
+                            height="{{playerHeight}}"
+                            currenttime="{{currentTime}}"
+                            fractionloaded="{{fractionLoaded}}"
+                            state="{{state}}"
+                            duration="{{duration}}"
+                            hero-id="{{selectedVideoId}}"
+                            hero>
+            </google-youtube>
+          </template>
+
+          <paper-slider id="seekbar"
+                        min="0"
+                        max="{{duration}}"
+                        value="{{currentTime}}"
+                        secondaryProgress="{{ fractionLoaded * duration }}"
+                        on-manual-change="{{handleSeekTo}}">
+          </paper-slider>
+
+          <core-toolbar id="playercontrols">
+            <paper-fab class="mini" icon="arrow-back" on-tap="{{handlePlayerClose}}"></paper-fab>
+
+            <template if="{{state == 1 || state == 3}}">
+              <paper-fab class="mini" icon="av:pause" on-tap="{{handlePause}}"></paper-fab>
+            </template>
+            <template if="{{state != 1 && state != 3}}">
+              <paper-fab class="mini" icon="av:play-arrow" on-tap="{{handlePlay}}"></paper-fab>
+            </template>
+
+            <p flex>{{selectedVideoTitle}}</p>
+          </core-toolbar>
+        </div>
+      </section>
+    </core-animated-pages>
 
     <template if="{{searchParams}}">
       <core-ajax auto
@@ -71,7 +119,8 @@ searches to populate the list of videos.
       var SEARCH_PARAM_REGEX = /searchparam/i;
 
       Polymer('google-youtube-video-wall', {
-        // TODO: Add JSDoc for the published attributes.
+        // TODO: Add JSDoc for the published attributes and clean up attribute names.
+        headerTitle: 'YouTube Videos',
         maxItems: 500,
         keySearchParam: 'AIzaSyAcB7qNYPC6bI7e3PHscV8w5-acmocWhmE',
         channelIdSearchParam: '',
@@ -121,31 +170,59 @@ searches to populate the list of videos.
         handleSearchResponse: function(e) {
           var response = e.detail.response;
 
-          if (this.data) {
-            this.data = this.data.concat(response.items);
+          if (this.videos) {
+            this.videos = this.videos.concat(response.items);
           } else {
-            this.data = response.items;
+            this.videos = response.items;
           }
 
-          if (response.nextPageToken && this.data.length < this.maxItems) {
+          if (response.nextPageToken && this.videos.length < this.maxItems) {
             this.nextPageToken = response.nextPageToken;
-            this.updateYouTubeApiSearchParams();
+            this.async(this.updateYouTubeApiSearchParams);
           }
         },
 
         handleItemSelected: function(e) {
-          this.selectedVideoId = e.detail.item.dataset.videoId;
-          this.selectedVideoTitle = e.detail.item.dataset.videoTitle;
-          this.$.playerdialog.toggle();
+          // The video player should be in a 16:9 aspect ratio.
+          this.playerWidth = '100%';
+          // We need to read the width of the container rather than rely on the width of the player
+          // itself, because the player is not yet on the page.
+          var containerWidth = this.$.corepage.offsetWidth;
+          this.playerHeight = (containerWidth * 9 / 16) + 'px';
+
+          this.selectedVideoId = e.srcElement.parentNode.dataset.videoId;
+          this.selectedVideoTitle = e.srcElement.parentNode.dataset.videoTitle;
+          this.$.corepage.selected = 1;
         },
 
-        handleDialogOpenOrClose: function(e) {
-          // e.detail will be set to true if the dialog opened,
-          // and set to a truthy Object otherwise, so we need to explicitly
-          // check !== true to see if this is a close event.
-          // TODO: See if this is a bug in the paper-dialog library.
-          if (e.detail !== true) {
-            this.shadowRoot.querySelector('google-youtube').pause();
+        handlePlayerClose: function() {
+          this.shadowRoot.querySelector('google-youtube').pause();
+          this.$.corepage.selected = 0;
+
+          this.state = -1;
+          this.currentTime = 0;
+          this.fractionLoaded = 0;
+        },
+
+        handlePlay: function() {
+          this.shadowRoot.querySelector('google-youtube').play();
+        },
+
+        handlePause: function() {
+          this.shadowRoot.querySelector('google-youtube').pause();
+        },
+
+        handleSeekTo: function() {
+          console.log('here');
+          this.shadowRoot.querySelector('google-youtube').seekTo(this.$.seekbar.value);
+        },
+
+        handleTransitionEnd: function() {
+          // If we've transitioned from the player to the results page, reset selectedVideoId
+          // so that the next <google-youtube> player element is "fresh".
+          // We can't reset it prior to the transition since it will mess up the hero-id mapping.
+          if (this.$.corepage.selected == 0) {
+            this.selectedVideoId = '';
           }
         },
 
