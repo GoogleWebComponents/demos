@@ -8,13 +8,14 @@
     "**/.*"
   ],
   "dependencies": {
-    "core-ajax": "Polymer/core-ajax#~0.3.3",
-    "core-header-panel": "Polymer/core-header-panel#~0.3.3",
-    "core-list": "Polymer/core-list#~0.3.3",
-    "core-toolbar": "Polymer/core-toolbar#~0.3.3",
-    "google-youtube": "GoogleWebComponents/google-youtube#~0.0.3",
+    "core-ajax": "Polymer/core-ajax#~0.3.4",
+    "core-animated-pages": "Polymer/core-animated-pages#~0.3.4",
+    "core-header-panel": "Polymer/core-header-panel#~0.3.4",
+    "core-list": "Polymer/core-list#~0.3.4",
+    "core-toolbar": "Polymer/core-toolbar#~0.3.4",
+    "google-youtube": "GoogleWebComponents/google-youtube#review-0.0.4",
     "paper-elements": "Polymer/paper-elements#master",
-    "polymer": "Polymer/polymer#~0.3.3",
+    "polymer": "Polymer/polymer#~0.3.4",
     "polymer-test-tools": "Polymer/polymer-test-tools#~0.3.3"
   }
 }

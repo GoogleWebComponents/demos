@@ -4,22 +4,23 @@
   font-size: 14px;
 }
 
+core-animated-pages {
+  position: absolute;
+  width: 95%;
+  height: 90%;
+}
+
 core-header-panel {
   position: absolute;
   width: 100%;
   height: 100%;
-  left: 0px;
-  top: 0px;
+  left: 0;
+  top: 0;
 }
 
 core-toolbar {
   color: rgb(255, 255, 255);
   background-color: rgb(79, 125, 201);
-}
-
-core-list {
-  height: 100%;
-  background: linear-gradient(rgb(214, 227, 231), rgb(173, 216, 230));
 }
 
 paper-ripple {
@@ -31,12 +32,10 @@ paper-ripple {
   width: 100%;
 }
 
-paper-dialog {
-  width: 530px;
-}
-
-paper-dialog /deep/ h1 {
-  margin-bottom: 20px;
+#searchresults {
+  background: linear-gradient(rgb(214, 227, 231), rgb(173, 216, 230));
+  padding: 5px;
+  text-align: center;
 }
 
 .video-container {
@@ -44,10 +43,9 @@ paper-dialog /deep/ h1 {
   display: inline-block;
   width: 340px;
   height: 340px;
-  background-color: #fff;
+  background-color: rgb(255, 255, 255);
   vertical-align: top;
-  margin-left: 25px;
-  margin-top: 25px;
+  margin: 5px;
 }
 
 .video-container > img {
@@ -67,4 +65,34 @@ paper-dialog /deep/ h1 {
   text-align: justify;
   margin-left: 10px;
   margin-right: 10px;
+}
+
+paper-slider {
+  width: 100%;
+  top: -20px;
+  position: relative;
+  z-index: 1;
+}
+
+paper-slider::shadow #sliderBar::shadow #secondaryProgress {
+  background-color: rgb(214, 227, 231);
+}
+
+#playercontrols {
+  margin-top: -38px;
+}
+
+@media (max-width: 361px) {
+  #searchresults {
+    padding-right: 15px;
+  }
+
+  .video-container {
+    width: 100%;
+  }
+
+  .video-container > img {
+    width: 100%;
+    margin: 0 0 5px 0;
+  }
 }
