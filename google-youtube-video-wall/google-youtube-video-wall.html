@@ -5,10 +5,12 @@
 <link rel="import" href="../bower_components/core-icon/core-icon.html">
 <link rel="import" href="../bower_components/core-icons/core-icons.html">
 <link rel="import" href="../bower_components/core-icons/iconsets/av-icons.html">
+<link rel="import" href="../bower_components/core-media-query/core-media-query.html">
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../bower_components/font-roboto/roboto.html">
 <link rel="import" href="../bower_components/google-youtube/google-youtube.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
@@ -31,9 +33,12 @@ searches to populate the list of videos.
 -->
 
 <polymer-element name="google-youtube-video-wall"
-                 attributes="headerTitle maxVideos keySearchParam channelIdSearchParam locationSearchParam locationRadiusSearchParam maxResultsSearchParam orderSearchParam publishedAfterSearchParam publishedBeforeSearchParam qSearchParam safeSearchSearchParam topicIdSearchParam videoCategoryIdSearchParam">
+                 attributes="headerTitle showSearch maxVideos key channelId location locationRadius maxResults order publishedAfter publishedBefore q safeSearch topicId videoCategoryId">
   <template>
     <link rel="stylesheet" href="google-youtube-video-wall.css" />
+
+    <core-media-query query="max-width: 600px" queryMatches="{{narrow}}"></core-media-query>
+    <core-media-query query="max-width: 400px" queryMatches="{{veryNarrow}}"></core-media-query>
 
     <core-animated-pages id="corepage"
                          transitions="hero-transition cross-fade"
@@ -41,11 +46,21 @@ searches to populate the list of videos.
                          on-core-animated-pages-transition-end="{{handleTransitionEnd}}">
       <section>
         <core-header-panel cross-fade>
-          <core-toolbar>
-            <header>{{headerTitle}}</header>
+          <core-toolbar class="{{ {'medium-tall': narrow} | tokenList }}">
+            <core-icon icon="av:video-youtube"></core-icon>
+            <header flex>{{headerTitle}}</header>
+
+            <template if="{{showSearch}}">
+              <core-icon icon="search" class="{{ {bottom: narrow} | tokenList }}"></core-icon>
+              <paper-input class="{{ {bottom: narrow} | tokenList }}"
+                           placeholder="Search for..."
+                           value="{{q}}"
+                           style="margin-top: 20px;">
+              </paper-input>
+            </template>
           </core-toolbar>
 
-          <div id="searchresults">
+          <div id="searchresults" class="{{ {veryNarrow: veryNarrow} | tokenList }}">
             <template repeat="{{video in videos}}">
               <div class="video-container"
                        data-video-id="{{video.id.videoId}}"
@@ -53,9 +68,11 @@ searches to populate the list of videos.
                        data-video-background-url="{{video.snippet.thumbnails.high.url}}"
                        on-tap="{{handleItemSelected}}">
                 <paper-shadow z="1"></paper-shadow>
-                <paper-ripple fit></paper-ripple>
+                <paper-ripple></paper-ripple>
 
-                <img src="{{video.snippet.thumbnails.medium.url}}" hero-id="{{video.id.videoId}}" hero>
+                <img src="{{video.snippet.thumbnails.medium.url}}"
+                     hero-id="{{video.id.videoId}}"
+                     hero>
                 <h1>{{video.snippet.title}}</h1>
                 <p>{{video.snippet.description}}</p>
               </div>
@@ -72,9 +89,11 @@ searches to populate the list of videos.
                             width="{{playerWidth}}"
                             height="{{playerHeight}}"
                             currenttime="{{currentTime}}"
+                            currenttimeformatted="{{currentTimeFormatted}}"
                             fractionloaded="{{fractionLoaded}}"
                             state="{{state}}"
                             duration="{{duration}}"
+                            durationformatted="{{durationFormatted}}"
                             hero-id="{{selectedVideoId}}"
                             hero>
             </google-youtube>
@@ -85,20 +104,33 @@ searches to populate the list of videos.
                         max="{{duration}}"
                         value="{{currentTime}}"
                         secondaryProgress="{{ fractionLoaded * duration }}"
-                        on-manual-change="{{handleSeekTo}}">
+                        on-manual-change="{{handleSeekTo}}"
+                        disabled?="{{duration == 0}}">
           </paper-slider>
 
-          <core-toolbar id="playercontrols">
-            <paper-fab class="mini" icon="arrow-back" on-tap="{{handlePlayerClose}}"></paper-fab>
+          <core-toolbar id="playercontrols" class="{{ {'medium-tall': narrow} | tokenList }}">
+            <paper-fab class="{{ {bottom: narrow, mini: true} | tokenList }}"
+                       icon="arrow-back"
+                       on-tap="{{handlePlayerClose}}">
+            </paper-fab>
 
             <template if="{{state == 1 || state == 3}}">
-              <paper-fab class="mini" icon="av:pause" on-tap="{{handlePause}}"></paper-fab>
+              <paper-fab class="{{ {bottom: narrow, mini: true} | tokenList }}"
+                         icon="av:pause"
+                         on-tap="{{handlePause}}">
+              </paper-fab>
             </template>
+
             <template if="{{state != 1 && state != 3}}">
-              <paper-fab class="mini" icon="av:play-arrow" on-tap="{{handlePlay}}"></paper-fab>
+              <paper-fab class="{{ {bottom: narrow, mini: true} | tokenList }}"
+                         icon="av:play-arrow"
+                         on-tap="{{handlePlay}}">
+              </paper-fab>
             </template>
 
             <p flex>{{selectedVideoTitle}}</p>
+
+            <p class="{{ {bottom: narrow} | tokenList }}" hidden?="{{duration == 0}}">{{currentTimeFormatted}}/{{durationFormatted}}</p>
           </core-toolbar>
         </div>
       </section>
@@ -121,21 +153,23 @@ searches to populate the list of videos.
       Polymer('google-youtube-video-wall', {
         // TODO: Add JSDoc for the published attributes and clean up attribute names.
         headerTitle: 'YouTube Videos',
+        showSearch: false,
         maxItems: 500,
-        keySearchParam: 'AIzaSyAcB7qNYPC6bI7e3PHscV8w5-acmocWhmE',
-        channelIdSearchParam: '',
-        locationSearchParam: '',
-        locationRadiusSearchParam: '',
-        maxResultsSearchParam: 50,
-        orderSearchParam: 'relevance',
-        publishedAfterSearchParam: '',
-        publishedBeforeSearchParam: '',
-        qSearchParam: '',
-        safeSearchSearchParam: 'moderate',
-        topicIdSearchParam: '',
-        videoCategoryIdSearchParam: '',
+        key: 'AIzaSyAcB7qNYPC6bI7e3PHscV8w5-acmocWhmE',
+        channelId: '',
+        location: '',
+        locationRadius: '',
+        maxResults: 50,
+        order: 'relevance',
+        publishedAfter: '',
+        publishedBefore: '',
+        q: '',
+        safeSearch: 'moderate',
+        topicId: '',
+        videoCategoryId: '',
 
-        selectedVideoId: '',
+        // Placeholder, since the YT Player doesn't like being initialized without a video id.
+        selectedVideoId: 'mN7IAaRdi_k',
         selectedVideoTitle: '',
         nextPageToken: '',
         youtubeApiSearchParams: '',
@@ -146,16 +180,16 @@ searches to populate the list of videos.
             pageToken: this.nextPageToken,
             type: 'video',
             videoEmbeddable: 'true',
-            key: this.keySearchParam,
-            maxResults: this.maxResultsSearchParam,
-            channelId: this.channelIdSearchParam,
-            location: this.locationSearchParam,
-            locationRadius: this.locationRadiusSearchParam,
-            order: this.orderSearchParam,
-            q: this.qSearchParam,
-            safeSearch: this.safeSearchSearchParam,
-            topicId: this.topicIdSearchParam,
-            videoCategoryId: this.videoCategoryIdSearchParam
+            key: this.key,
+            maxResults: this.maxResults,
+            channelId: this.channelId,
+            location: this.location,
+            locationRadius: this.locationRadius,
+            order: this.order,
+            q: this.q,
+            safeSearch: this.safeSearch,
+            topicId: this.topicId,
+            videoCategoryId: this.videoCategoryId
           };
 
           Object.keys(params).forEach(function(key) {
@@ -170,7 +204,8 @@ searches to populate the list of videos.
         handleSearchResponse: function(e) {
           var response = e.detail.response;
 
-          if (this.videos) {
+          // If there are already some results and this is the next page of results, concatenate.
+          if (this.videos && this.nextPageToken) {
             this.videos = this.videos.concat(response.items);
           } else {
             this.videos = response.items;
@@ -183,15 +218,8 @@ searches to populate the list of videos.
         },
 
         handleItemSelected: function(e) {
-          // The video player should be in a 16:9 aspect ratio.
-          this.playerWidth = '100%';
-          // We need to read the width of the container rather than rely on the width of the player
-          // itself, because the player is not yet on the page.
-          var containerWidth = this.$.corepage.offsetWidth;
-          this.playerHeight = (containerWidth * 9 / 16) + 'px';
-
-          this.selectedVideoId = e.srcElement.parentNode.dataset.videoId;
           this.selectedVideoTitle = e.srcElement.parentNode.dataset.videoTitle;
+          this.selectedVideoId = e.srcElement.parentNode.dataset.videoId;
           this.$.corepage.selected = 1;
         },
 
@@ -213,7 +241,6 @@ searches to populate the list of videos.
         },
 
         handleSeekTo: function() {
-          console.log('here');
           this.shadowRoot.querySelector('google-youtube').seekTo(this.$.seekbar.value);
         },
 
@@ -226,13 +253,20 @@ searches to populate the list of videos.
           }
         },
 
-        attributeChanged: function(attrName, oldVal, newVal) {
-          if (SEARCH_PARAM_REGEX.test(attrName)) {
+        observe: {
+          'key channelId location locationRadius maxResults order publishedAfter publishedBefore q safeSearch topicId videoCategoryId': function() {
+            this.nextPageToken = '';
             this.updateYouTubeApiSearchParams();
           }
         },
 
         ready: function() {
+          // The video player should be in a 16:9 aspect ratio.
+          this.playerWidth = '100%';
+          // We need to read the width of the container rather than rely on the width of the player
+          // itself, because the player is not yet on the page.
+          this.playerHeight = (this.$.corepage.offsetWidth * 9 / 16) + 'px';
+
           this.updateYouTubeApiSearchParams();
         }
       });
