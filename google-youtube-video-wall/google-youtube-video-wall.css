@@ -1,13 +1,16 @@
 :host {
   display: block;
+  position: relative;
   font-family: RobotoDraft, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
 }
 
 core-animated-pages {
   position: absolute;
-  width: 95%;
-  height: 90%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 core-header-panel {

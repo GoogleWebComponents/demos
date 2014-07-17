@@ -38,7 +38,7 @@ searches to populate the list of videos.
     <link rel="stylesheet" href="google-youtube-video-wall.css" />
 
     <core-media-query query="max-width: 600px" queryMatches="{{narrow}}"></core-media-query>
-    <core-media-query query="max-width: 400px" queryMatches="{{veryNarrow}}"></core-media-query>
+    <core-media-query query="max-width: 450px" queryMatches="{{veryNarrow}}"></core-media-query>
 
     <core-animated-pages id="corepage"
                          transitions="hero-transition cross-fade"
@@ -46,7 +46,7 @@ searches to populate the list of videos.
                          on-core-animated-pages-transition-end="{{handleTransitionEnd}}">
       <section>
         <core-header-panel cross-fade>
-          <core-toolbar class="{{ {'medium-tall': narrow} | tokenList }}">
+          <core-toolbar class="{{ {'medium-tall': narrow && showSearch} | tokenList }}">
             <core-icon icon="av:video-youtube"></core-icon>
             <header flex>{{headerTitle}}</header>
 
@@ -61,6 +61,10 @@ searches to populate the list of videos.
           </core-toolbar>
 
           <div id="searchresults" class="{{ {veryNarrow: veryNarrow} | tokenList }}">
+            <template if="{{ videos != null && videos.length == 0}}">
+              <h1>Sorry, no videos were found!</h1>
+            </template>
+
             <template repeat="{{video in videos}}">
               <div class="video-container"
                        data-video-id="{{video.id.videoId}}"
@@ -173,6 +177,7 @@ searches to populate the list of videos.
         selectedVideoTitle: '',
         nextPageToken: '',
         youtubeApiSearchParams: '',
+        videos: null,
 
         updateYouTubeApiSearchParams: function() {
           var params = {
@@ -261,13 +266,15 @@ searches to populate the list of videos.
         },
 
         ready: function() {
+          this.updateYouTubeApiSearchParams();
+        },
+
+        domReady: function() {
           // The video player should be in a 16:9 aspect ratio.
           this.playerWidth = '100%';
           // We need to read the width of the container rather than rely on the width of the player
           // itself, because the player is not yet on the page.
           this.playerHeight = (this.$.corepage.offsetWidth * 9 / 16) + 'px';
-
-          this.updateYouTubeApiSearchParams();
         }
       });
     })();

@@ -13,6 +13,8 @@
     "core-header-panel": "Polymer/core-header-panel#~0.3.4",
     "core-list": "Polymer/core-list#~0.3.4",
     "core-toolbar": "Polymer/core-toolbar#~0.3.4",
+    "geo-location": "ebidel/geo-location#0.0.3",
+    "google-map": "PolymerLabs/google-map#0.3.0",
     "google-youtube": "GoogleWebComponents/google-youtube#review-0.0.4",
     "paper-elements": "Polymer/paper-elements#master",
     "paper-slider": "jeffposnick/paper-slider#master",
