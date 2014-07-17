@@ -32,6 +32,10 @@ paper-ripple {
   width: 100%;
 }
 
+paper-input /deep/ input {
+  color: rgb(255, 255, 255);
+}
+
 #searchresults {
   background: linear-gradient(rgb(214, 227, 231), rgb(173, 216, 230));
   padding: 5px;
@@ -82,17 +86,17 @@ paper-slider::shadow #sliderBar::shadow #secondaryProgress {
   margin-top: -38px;
 }
 
-@media (max-width: 361px) {
-  #searchresults {
-    padding-right: 15px;
-  }
+/* Specific styles for "very" narrow screens,
+   triggered by the <core-media-query> on the host page. */
+#searchresults.veryNarrow {
+  padding-right: 15px;
+}
 
-  .video-container {
-    width: 100%;
-  }
+#searchresults.veryNarrow > .video-container {
+  width: 100%;
+}
 
-  .video-container > img {
-    width: 100%;
-    margin: 0 0 5px 0;
-  }
+#searchresults.veryNarrow > .video-container > img {
+  width: 100%;
+  margin: 0 0 5px 0;
 }
