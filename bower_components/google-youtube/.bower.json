@@ -13,11 +13,11 @@
     "polymer": "Polymer/polymer#~0.3.4",
     "polymer-test-tools": "Polymer/polymer-test-tools#~0.3.3"
   },
-  "_release": "dcdb73ca8b",
+  "_release": "27461aeaa5",
   "_resolution": {
     "type": "branch",
     "branch": "review-0.0.4",
-    "commit": "dcdb73ca8b62d5d48c5ec88c0d1e6678c6a80e38"
+    "commit": "27461aeaa588ecbe38d89cbfb1d9338e718b5f96"
   },
   "_source": "git://github.com/GoogleWebComponents/google-youtube.git",
   "_target": "review-0.0.4",
