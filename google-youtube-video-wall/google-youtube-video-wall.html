@@ -211,7 +211,9 @@ searches to populate the list of videos.
 
           // If there are already some results and this is the next page of results, concatenate.
           if (this.videos && this.nextPageToken) {
-            this.videos = this.videos.concat(response.items);
+            for (var i = 0; i < response.items.length; i++) {
+              this.videos.push(response.items[i]);
+            }
           } else {
             this.videos = response.items;
           }
