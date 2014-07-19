@@ -45,9 +45,8 @@ searches to populate the list of videos.
                          selected="0"
                          on-core-animated-pages-transition-end="{{handleTransitionEnd}}">
       <section>
-        <core-header-panel cross-fade>
+        <core-header-panel id="resultspage" cross-fade>
           <core-toolbar class="{{ {'medium-tall': narrow && showSearch} | tokenList }}">
-            <core-icon icon="av:video-youtube"></core-icon>
             <header flex>{{headerTitle}}</header>
 
             <template if="{{showSearch}}">
@@ -69,16 +68,17 @@ searches to populate the list of videos.
               <div class="video-container"
                        data-video-id="{{video.id.videoId}}"
                        data-video-title="{{video.snippet.title}}"
-                       data-video-background-url="{{video.snippet.thumbnails.high.url}}"
                        on-tap="{{handleItemSelected}}">
-                <paper-shadow z="1"></paper-shadow>
-                <paper-ripple></paper-ripple>
+                <paper-shadow z="0"></paper-shadow>
+                <paper-ripple class="recenteringTouch"></paper-ripple>
 
                 <img src="{{video.snippet.thumbnails.medium.url}}"
                      hero-id="{{video.id.videoId}}"
                      hero>
-                <h1>{{video.snippet.title}}</h1>
-                <p>{{video.snippet.description}}</p>
+                <div id="text-container">
+                  <h1>{{video.snippet.title}}</h1>
+                  <p>{{video.snippet.description}}</p>
+                </div>
               </div>
             </template>
           </div>
@@ -86,7 +86,7 @@ searches to populate the list of videos.
       </section>
 
       <section>
-        <div cross-fade>
+        <div id="playerpage" cross-fade>
           <template if="{{selectedVideoId}}">
             <google-youtube videoid="{{selectedVideoId}}"
                             chromeless
@@ -113,10 +113,10 @@ searches to populate the list of videos.
           </paper-slider>
 
           <core-toolbar id="playercontrols" class="{{ {'medium-tall': narrow} | tokenList }}">
-            <paper-fab class="{{ {bottom: narrow, mini: true} | tokenList }}"
-                       icon="arrow-back"
-                       on-tap="{{handlePlayerClose}}">
-            </paper-fab>
+            <paper-icon-button id="close-button"
+                               icon="close"
+                               on-tap="{{handlePlayerClose}}">
+            </paper-icon-button>
 
             <template if="{{state == 1 || state == 3}}">
               <paper-fab class="{{ {bottom: narrow, mini: true} | tokenList }}"
@@ -211,7 +211,9 @@ searches to populate the list of videos.
 
           // If there are already some results and this is the next page of results, concatenate.
           if (this.videos && this.nextPageToken) {
-            this.videos = this.videos.concat(response.items);
+            for (var i = 0; i < response.items.length; i++) {
+              this.videos.push(response.items[i]);
+            }
           } else {
             this.videos = response.items;
           }

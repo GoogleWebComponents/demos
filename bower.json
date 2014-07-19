@@ -17,7 +17,6 @@
     "google-map": "PolymerLabs/google-map#0.3.0",
     "google-youtube": "GoogleWebComponents/google-youtube#review-0.0.4",
     "paper-elements": "Polymer/paper-elements#master",
-    "paper-slider": "jeffposnick/paper-slider#master",
     "polymer": "Polymer/polymer#~0.3.4",
     "polymer-test-tools": "Polymer/polymer-test-tools#~0.3.3"
   }

@@ -2,10 +2,9 @@
   display: block;
   position: relative;
   font-family: RobotoDraft, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 14px;
 }
 
-core-animated-pages {
+core-animated-pages, paper-ripple, #resultspage, #playerpage {
   position: absolute;
   top: 0;
   right: 0;
@@ -13,65 +12,59 @@ core-animated-pages {
   left: 0;
 }
 
-core-header-panel {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
+#playerpage {
+  background: #e5e5e5;
 }
 
 core-toolbar {
-  color: rgb(255, 255, 255);
-  background-color: rgb(79, 125, 201);
+  color: #ffffff;
+  background-color: #e51c23;
 }
 
 paper-ripple {
-  color: rgb(79, 125, 201);
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
+  color: #ff7997;
 }
 
 paper-input /deep/ input {
-  color: rgb(255, 255, 255);
+  color: #ffffff;
 }
 
 #searchresults {
-  background: linear-gradient(rgb(214, 227, 231), rgb(173, 216, 230));
-  padding: 5px;
+  background: #e5e5e5;
+  padding: 8px 8px 8px 12px;
   text-align: center;
 }
 
 .video-container {
   cursor: pointer;
   display: inline-block;
-  width: 340px;
-  height: 340px;
-  background-color: rgb(255, 255, 255);
+  width: 320px;
+  height: 320px;
+  background-color: #ffffff;
   vertical-align: top;
-  margin: 5px;
+  margin: 4px 4px 4px 0;
 }
 
 .video-container > img {
+  width: 100%;
   display: block;
-  margin: 10px auto 10px auto;
 }
 
-.video-container > h1 {
-  font-weight: bold;
-  font-size: 120%;
-  text-align: center;
-  margin-left: 10px;
-  margin-right: 10px;
+#text-container {
+  height: 124px;
+  overflow-y: hidden;
 }
 
-.video-container > p {
-  text-align: justify;
-  margin-left: 10px;
-  margin-right: 10px;
+#text-container > h1 {
+  text-align: left;
+  font-size: 16px;
+  margin: 16px 16px 0 16px;
+}
+
+#text-container > p {
+  text-align: left;
+  font-size: 12px;
+  margin: 8px 16px 16px 16px;
 }
 
 paper-slider {
@@ -81,25 +74,40 @@ paper-slider {
   z-index: 1;
 }
 
+paper-fab {
+  color: #827717;
+  background-color: #b2ff59;
+}
+
+#close-button {
+  color: #000000;
+  background: linear-gradient(#ffffff, #e5e5e5);
+  position: fixed;
+  top: 16px;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+paper-slider::shadow #sliderBar::shadow #activeProgress {
+  background-color: #827717;
+}
+
+paper-slider::shadow #sliderKnobInner {
+  background-color: #b2ff59;
+}
+
 paper-slider::shadow #sliderBar::shadow #secondaryProgress {
-  background-color: rgb(214, 227, 231);
+  background-color: #afb42b;
 }
 
 #playercontrols {
-  margin-top: -38px;
+  margin-top: -40px;
 }
 
-/* Specific styles for "very" narrow screens,
-   triggered by the <core-media-query> on the host page. */
 #searchresults.veryNarrow {
-  padding-right: 15px;
+  padding-right: 12px;
 }
 
 #searchresults.veryNarrow > .video-container {
   width: 100%;
-}
-
-#searchresults.veryNarrow > .video-container > img {
-  width: 100%;
-  margin: 0 0 5px 0;
 }
