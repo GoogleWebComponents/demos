@@ -1,0 +1,31 @@
+{
+  "name": "google-youtube-video-wall",
+  "description": "YouTube Video Wall demo. Powered by the google-youtube Polymer component.",
+  "keywords": [
+    "demos",
+    "youtube",
+    "video-wall",
+    "polymer",
+    "web-components"
+  ],
+  "license": "Apache-2.0",
+  "homepage": "http://googlewebcomponents.github.io/demos/google-youtube-video-wall/demo.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "../"
+  ],
+  "dependencies": {
+    "core-elements": "Polymer/core-elements#^0.4.1",
+    "google-youtube": "GoogleWebComponents/google-youtube#~0.0.8",
+    "paper-elements": "Polymer/paper-elements#^0.4.1"
+  },
+  "devDependencies": {
+    "geo-location": "ebidel/geo-location#~0.0.5",
+    "google-map": "GoogleWebComponents/google-map#~0.3.1",
+    "polymer-test-tools": "Polymer/polymer-test-tools#^0.4.1"
+  }
+}

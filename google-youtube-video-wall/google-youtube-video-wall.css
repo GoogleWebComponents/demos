@@ -1,7 +1,8 @@
 :host {
   display: block;
   position: relative;
-  font-family: RobotoDraft, 'Helvetica Neue', Arial, sans-serif;
+  font-family: RobotoDraft, Helvetica, Arial, sans-serif;
+  background: #e5e5e5;
 }
 
 core-animated-pages, paper-ripple, #resultspage, #playerpage {
@@ -12,13 +13,21 @@ core-animated-pages, paper-ripple, #resultspage, #playerpage {
   left: 0;
 }
 
-#playerpage {
-  background: #e5e5e5;
+#youtubeplayer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 64px;
+}
+
+#playerpage.narrow #youtubeplayer {
+  bottom: 128px;
 }
 
 core-toolbar {
   color: #ffffff;
-  background-color: #e51c23;
+  background-color: #ad1457;
 }
 
 paper-ripple {
@@ -30,7 +39,6 @@ paper-input /deep/ input {
 }
 
 #searchresults {
-  background: #e5e5e5;
   padding: 8px 8px 8px 12px;
   text-align: center;
 }
@@ -42,48 +50,58 @@ paper-input /deep/ input {
   height: 320px;
   background-color: #ffffff;
   vertical-align: top;
-  margin: 4px 4px 4px 0;
+  margin: 8px 8px 8px 0;
+  border-radius: 2px;
 }
 
 .video-container > img {
   width: 100%;
   display: block;
+  overflow: hidden;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
 }
 
-#text-container {
+.text-container {
   height: 124px;
   overflow-y: hidden;
 }
 
-#text-container > h1 {
+.text-container > h1 {
   text-align: left;
   font-size: 16px;
   margin: 16px 16px 0 16px;
 }
 
-#text-container > p {
+.text-container > p {
   text-align: left;
   font-size: 12px;
   margin: 8px 16px 16px 16px;
 }
 
 paper-slider {
+  position: absolute;
   width: 100%;
-  top: -20px;
-  position: relative;
+  bottom: 47px;
+  left: 0;
   z-index: 1;
 }
 
+#playerpage.narrow paper-slider {
+  bottom: 111px;
+}
+
 paper-fab {
-  color: #827717;
-  background-color: #b2ff59;
+  color: #056f00;
+  background-color: #a2f78d;
 }
 
 #close-button {
   color: #000000;
-  background: linear-gradient(#ffffff, #e5e5e5);
-  position: fixed;
+  background: #e5e5e5;
+  position: relative;
   top: 16px;
+  left: 16px;
   opacity: 0.5;
   z-index: 1;
 }
@@ -93,7 +111,7 @@ paper-slider::shadow #sliderBar::shadow #activeProgress {
 }
 
 paper-slider::shadow #sliderKnobInner {
-  background-color: #b2ff59;
+  background-color: #a2f78d;
 }
 
 paper-slider::shadow #sliderBar::shadow #secondaryProgress {
@@ -101,7 +119,10 @@ paper-slider::shadow #sliderBar::shadow #secondaryProgress {
 }
 
 #playercontrols {
-  margin-top: -40px;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
 }
 
 #searchresults.veryNarrow {
