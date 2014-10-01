@@ -45,12 +45,13 @@ and the [YouTube Data API v3](https://developers.google.com/youtube/v3/) searche
     <core-media-query query="max-width: {{narrowWidth}}" queryMatches="{{narrow}}"></core-media-query>
     <core-media-query query="max-width: {{veryNarrowWidth}}" queryMatches="{{veryNarrow}}"></core-media-query>
 
-    <core-animated-pages id="corepage"
+    <core-animated-pages fit
+                         id="corepage"
                          transitions="hero-transition cross-fade"
                          selected="0"
                          on-core-animated-pages-transition-end="{{handleTransitionEnd}}">
       <section>
-        <core-header-panel id="resultspage" cross-fade>
+        <core-header-panel id="resultspage" fit cross-fade>
           <core-toolbar class="{{ {'medium-tall': narrow && showSearch} | tokenList }}">
             <header flex>{{title}}</header>
 
@@ -79,7 +80,7 @@ and the [YouTube Data API v3](https://developers.google.com/youtube/v3/) searche
                        data-video-title="{{video.snippet.title}}"
                        on-tap="{{handleItemSelected}}">
                 <paper-shadow z="1"></paper-shadow>
-                <paper-ripple></paper-ripple>
+                <paper-ripple fit></paper-ripple>
 
                 <img src="{{video.snippet.thumbnails.medium.url}}"
                      hero-id="{{video.id.videoId}}"
@@ -95,7 +96,7 @@ and the [YouTube Data API v3](https://developers.google.com/youtube/v3/) searche
       </section>
 
       <section>
-        <div id="playerpage" cross-fade class="{{ {narrow: narrow} | tokenList }}">
+        <div id="playerpage" fit cross-fade class="{{ {narrow: narrow} | tokenList }}">
           <template if="{{_selectedVideoId}}">
             <paper-icon-button id="close-button"
                                icon="close"
