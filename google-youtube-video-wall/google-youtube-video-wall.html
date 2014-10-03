@@ -38,7 +38,7 @@ and the [YouTube Data API v3](https://developers.google.com/youtube/v3/) searche
 -->
 
 <polymer-element name="google-youtube-video-wall"
-                 attributes="apiKey channelId title location locationRadius maxResults maxVideos narrowWidth order publishedAfter publishedBefore q safeSearch showSearch topicId veryNarrowWidth videoCategoryId">
+                 attributes="apiKey channelId location locationRadius maxResults maxVideos narrowWidth order publishedAfter publishedBefore q safeSearch showSearch topicId veryNarrowWidth videoCategoryId wallTitle">
   <template>
     <link rel="stylesheet" href="google-youtube-video-wall.css">
 
@@ -53,7 +53,7 @@ and the [YouTube Data API v3](https://developers.google.com/youtube/v3/) searche
       <section>
         <core-header-panel id="resultspage" fit cross-fade>
           <core-toolbar class="{{ {'medium-tall': narrow && showSearch} | tokenList }}">
-            <header flex>{{title}}</header>
+            <header flex>{{wallTitle}}</header>
 
             <template if="{{showSearch}}">
               <core-icon icon="search" class="{{ {bottom: narrow} | tokenList }}"></core-icon>
@@ -337,15 +337,6 @@ and the [YouTube Data API v3](https://developers.google.com/youtube/v3/) searche
         showSearch: false,
 
         /**
-         * Title displayed in the video wall header.
-         *
-         * @attribute title
-         * @type string
-         * @default 'YouTube Videos'
-         */
-        title: 'YouTube Videos',
-
-        /**
          * An optional search filter which limits the results to videos that match the specified topic id.
          *
          * Topic ids traditionally begin with the prefix `/m/`.
@@ -387,6 +378,14 @@ and the [YouTube Data API v3](https://developers.google.com/youtube/v3/) searche
          */
         videoCategoryId: '',
 
+        /**
+         * Title displayed in the video wall header.
+         *
+         * @attribute wallTitle
+         * @type string
+         * @default 'YouTube Videos'
+         */
+        wallTitle: 'YouTube Videos',
 
         // Placeholder, since the YT Player doesn't like being initialized without a video id.
         _selectedVideoId: 'mN7IAaRdi_k',
